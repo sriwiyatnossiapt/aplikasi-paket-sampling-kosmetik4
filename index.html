@@ -16,7 +16,7 @@
         .card:hover { transform: translateY(-5px); border-color: #3498db; box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
         .card h2 { font-size: 40px; margin-bottom: 10px; }
 
-        .content-section { display: none; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 1100px; margin: auto; }
+        .content-section { display: none; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 1200px; margin: auto; }
         .active { display: block !important; }
 
         .form-group { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
@@ -25,10 +25,11 @@
         input, select { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; background: white; }
         input:focus { border-color: #3498db; outline: none; }
 
-        .table-container { overflow-x: auto; margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; font-size: 11px; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-        th { background: #3498db; color: white; }
+        .table-container { overflow-x: auto; margin-top: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; min-width: 1200px; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+        th { background: #3498db; color: white; position: sticky; top: 0; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
         
         .btn { padding: 12px 20px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; transition: 0.2s; }
         .btn-back { background: #7f8c8d; color: white; margin-bottom: 20px; }
@@ -57,7 +58,7 @@
         <div class="form-group">
             <div class="input-item"> <label>A. No. Urut (Otomatis)</label> <input type="text" id="noUrut" readonly style="background: #e9ecef; font-weight: bold; color: #2c3e50;"></div>
             <div class="input-item"><label>B. Tanggal Sampling</label><input type="date" id="tglOtomatis"></div>
-            <div class="input-item"><label>C. Nama Produk (Brand/Merk)</label><input type="text" id="namaProduk" placeholder="Contoh: MS Glow Whitening Cream"></div>
+            <div class="input-item"><label>C. Nama Produk (Brand/Merk)</label><input type="text" id="namaProduk" placeholder="Contoh: MS Glow"></div>
             
             <div class="input-item">
                 <label>D. Kategori</label>
@@ -91,8 +92,8 @@
             <div class="input-item"><label>H. NIE (Nomor Izin Edar)</label><input type="text" id="nie" placeholder="NA123456789"></div>
             <div class="input-item"><label>I. Nomor Batch</label><input type="text" id="noBatch"></div>
             <div class="input-item"><label>J. Expired Date (ED)</label><input type="date" id="ed"></div>
-            <div class="input-item"><label>K. Tempat Sampling</label><input type="text" id="tempat" placeholder="Nama Toko/Borma/Griya"></div>
-            <div class="input-item"><label>L. Auto Bulan (Angka)</label><input type="text" id="autoBulan" readonly style="background: #e9ecef;"></div>
+            <div class="input-item"><label>K. Tempat Sampling</label><input type="text" id="tempat" placeholder="Nama Toko"></div>
+            <div class="input-item"><label>L. Auto Bulan</label><input type="text" id="autoBulan" readonly style="background: #e9ecef;"></div>
             <div class="input-item"><label>M. Petugas</label><input type="text" id="petugas" placeholder="Nama Petugas"></div>
         </div>
         <button class="btn btn-save" id="btnSimpan" onclick="simpanData()">Simpan ke Google Sheets</button>
@@ -112,24 +113,30 @@
     <div id="rekap" class="content-section">
         <button class="btn btn-back" onclick="kembaliKeMenu()">← Kembali</button>
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h2>Data Terkoneksi Google Sheets</h2>
+            <h2>Data Terkoneksi Google Sheets (Lengkap 13 Kolom)</h2>
             <button class="btn btn-danger" onclick="tampilkanRekap(true)">🔄 Segarkan Data</button>
         </div>
         <div class="table-container">
-            <table>
+            <table id="rekapTable">
                 <thead>
                     <tr>
                         <th>No</th>
                         <th>Tanggal</th>
                         <th>Produk</th>
                         <th>Kategori</th>
+                        <th>Sub Kat</th>
+                        <th>Sub Sub</th>
+                        <th>Metode</th>
+                        <th>NIE</th>
+                        <th>Batch</th>
+                        <th>ED</th>
                         <th>Tempat</th>
                         <th>Bulan</th>
                         <th>Petugas</th>
                     </tr>
                 </thead>
                 <tbody id="rekapBody">
-                    <tr><td colspan="7">Klik "Segarkan Data" untuk memuat...</td></tr>
+                    <tr><td colspan="13">Klik "Segarkan Data" untuk memuat...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -153,7 +160,7 @@
             "10": ["Pelembab/moisturizer"]
         };
 
-        // 1. UPDATE: Event Listener Tanggal menjadi Angka
+        // Event Listener Tanggal
         document.getElementById('tglOtomatis').addEventListener('change', function() {
             if(this.value) {
                 const tgl = new Date(this.value);
@@ -206,12 +213,12 @@
                     mode: "no-cors",
                     body: JSON.stringify(data)
                 });
-                alert("Berhasil! Data telah disimpan.");
+                alert("Berhasil disimpan!");
                 cacheRekap = null; 
                 resetForm();
                 await tampilkanHalaman('input-data'); 
             } catch (err) {
-                alert("Gagal menyimpan: " + err);
+                alert("Gagal: " + err);
             } finally {
                 btn.disabled = false;
                 btn.innerText = "Simpan ke Google Sheets";
@@ -219,11 +226,11 @@
         }
 
         function resetForm() {
-            const inputIds = ['namaProduk', 'subSub', 'nie', 'noBatch', 'ed', 'tempat', 'petugas'];
-            inputIds.forEach(id => { document.getElementById(id).value = ""; });
+            ['namaProduk', 'subSub', 'nie', 'noBatch', 'ed', 'tempat', 'petugas'].forEach(id => {
+                document.getElementById(id).value = "";
+            });
             document.getElementById('kategori').value = "";
             document.getElementById('subKategori').innerHTML = '<option value="">-- Pilih Kategori Dulu --</option>';
-            document.getElementById('metode').selectedIndex = 0;
         }
 
         async function tampilkanRekap(forceRefresh = false) {
@@ -232,29 +239,29 @@
                 renderTabel(cacheRekap);
                 return;
             }
-            rb.innerHTML = '<tr><td colspan="7" class="loading-text">⚡ Menghubungkan ke Server Google...</td></tr>';
+            rb.innerHTML = '<tr><td colspan="13" class="loading-text">⚡ Mengambil data lengkap...</td></tr>';
             try {
                 const response = await fetch(URL_GOOGLE_SCRIPT + "?action=read&t=" + new Date().getTime());
                 const data = await response.json();
                 cacheRekap = data;
                 renderTabel(data);
             } catch (error) {
-                rb.innerHTML = `<tr><td colspan="7" style="color:red;">Gagal memuat data.</td></tr>`;
+                rb.innerHTML = `<tr><td colspan="13" style="color:red;">Gagal memuat data.</td></tr>`;
             }
         }
 
-        // 2. UPDATE: Fungsi Render Tabel agar angka bulan jadi Nama Bulan lagi di tampilan
         function renderTabel(data) {
             const rb = document.getElementById('rekapBody');
             if (!data || data.length === 0) {
-                rb.innerHTML = '<tr><td colspan="7">Database kosong.</td></tr>';
+                rb.innerHTML = '<tr><td colspan="13">Database kosong.</td></tr>';
                 return;
             }
 
             const namaBulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
             const html = data.map(row => {
-                const bulanValue = row[11]; // Index 11 adalah kolom 'Bulan' di Sheets (Kolom L)
+                // Konversi angka bulan (Kolom L / Index 11) ke Nama
+                const bulanValue = row[11]; 
                 const tampilanBulan = namaBulan[parseInt(bulanValue)] || bulanValue;
 
                 return `
@@ -263,7 +270,13 @@
                         <td>${row[1] ? row[1].split('T')[0] : ''}</td>
                         <td>${row[2] || ''}</td>
                         <td>${row[3] || ''}</td>
-                        <td>${row[10] || ''}</td> 
+                        <td>${row[4] || ''}</td>
+                        <td>${row[5] || ''}</td>
+                        <td>${row[6] || ''}</td>
+                        <td>${row[7] || ''}</td>
+                        <td>${row[8] || ''}</td>
+                        <td>${row[9] ? row[9].split('T')[0] : ''}</td>
+                        <td>${row[10] || ''}</td>
                         <td>${tampilanBulan}</td>
                         <td>${row[12] || ''}</td>
                     </tr>
@@ -290,7 +303,7 @@
                     inputNo.value = "Error";
                 }
             }
-            if(id === 'rekap') { tampilkanRekap(); }
+            if(id === 'rekap') tampilkanRekap();
         }
 
         function kembaliKeMenu() {
@@ -298,7 +311,8 @@
             document.getElementById('dashboard').classList.add('active');
         }
 
-        const cats = ["Kosmetik Beresiko Tinggi","Kosmetik riwayat TMS","Sampling Mandiri UPT","Produksi Tiongkok"," Kontrak Produksi","Kuasa Merek","Menengah ke bawah / Viral","Online Official Store","Klaim Komposisi Tertentu","DNA porcine"];
+        // Init Tabel Renlak
+        const cats = ["Kosmetik Beresiko Tinggi","Kosmetik riwayat TMS","Sampling Mandiri UPT","Produksi Tiongkok","Kontrak Produksi","Kuasa Merek","Menengah ke bawah / Viral","Online Official Store","Klaim Komposisi Tertentu","DNA porcine"];
         const trb = document.getElementById('tabelRenlakBody');
         cats.forEach(c => {
             let r = `<tr><td style="text-align:left; font-weight:bold;">${c}</td>`;
