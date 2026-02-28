@@ -92,7 +92,7 @@
             <div class="input-item"><label>I. Nomor Batch</label><input type="text" id="noBatch"></div>
             <div class="input-item"><label>J. Expired Date (ED)</label><input type="date" id="ed"></div>
             <div class="input-item"><label>K. Tempat Sampling</label><input type="text" id="tempat" placeholder="Nama Toko/Borma/Griya"></div>
-            <div class="input-item"><label>L. Auto Bulan</label><input type="text" id="autoBulan" readonly style="background: #e9ecef;"></div>
+            <div class="input-item"><label>L. Auto Bulan (Angka)</label><input type="text" id="autoBulan" readonly style="background: #e9ecef;"></div>
             <div class="input-item"><label>M. Petugas</label><input type="text" id="petugas" placeholder="Nama Petugas"></div>
         </div>
         <button class="btn btn-save" id="btnSimpan" onclick="simpanData()">Simpan ke Google Sheets</button>
@@ -136,10 +136,9 @@
     </div>
 
     <script>
-        // GANTI URL INI DENGAN URL DEPLOY ANDA
         const URL_GOOGLE_SCRIPT = "https://script.google.com/macros/s/AKfycbybak0m1wUhbgDkwvaFIu8O4FoAEJJ45nTjd3tsGeYQdytQeExmURnc_v5zlgU7r7MU/exec";
 
-        let cacheRekap = null; // Menyimpan data di memori agar tidak download terus-menerus
+        let cacheRekap = null;
 
         const subKategoriData = {
             "1": ["Sediaan bayi", "Sediaan perawatan wajah", "Sediaan rias mata", "Sediaan rias wajah", "Sediaan rias bibir", "Sediaan parfum", "Sediaan pewarna kuku"],
@@ -154,12 +153,12 @@
             "10": ["Pelembab/moisturizer"]
         };
 
-        // Event Listener Tanggal
+        // 1. UPDATE: Event Listener Tanggal menjadi Angka
         document.getElementById('tglOtomatis').addEventListener('change', function() {
-            const daftarBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
             if(this.value) {
                 const tgl = new Date(this.value);
-                document.getElementById('autoBulan').value = daftarBulan[tgl.getMonth()];
+                const bulanAngka = tgl.getMonth() + 1; 
+                document.getElementById('autoBulan').value = bulanAngka;
             }
         });
 
@@ -176,100 +175,75 @@
         }
 
         async function simpanData() {
-    const btn = document.getElementById('btnSimpan');
-    
-    // Validasi dasar agar data tidak kosong
-    if(!document.getElementById('namaProduk').value || !document.getElementById('tglOtomatis').value) {
-        return alert("Mohon isi Nama Produk dan Tanggal!");
-    }
+            const btn = document.getElementById('btnSimpan');
+            if(!document.getElementById('namaProduk').value || !document.getElementById('tglOtomatis').value) {
+                return alert("Mohon isi Nama Produk dan Tanggal!");
+            }
 
-    const data = {
-        action: "insert",
-        no: document.getElementById('noUrut').value,
-        tgl: document.getElementById('tglOtomatis').value,
-        nama: document.getElementById('namaProduk').value,
-        kat: document.getElementById('kategori').options[document.getElementById('kategori').selectedIndex].text,
-        sub: document.getElementById('subKategori').value,
-        subsub: document.getElementById('subSub').value,
-        metode: document.getElementById('metode').value,
-        nie: document.getElementById('nie').value,
-        batch: document.getElementById('noBatch').value,
-        ed: document.getElementById('ed').value,
-        tempat: document.getElementById('tempat').value,
-        bulan: document.getElementById('autoBulan').value,
-        petugas: document.getElementById('petugas').value
-    };
+            const data = {
+                action: "insert",
+                no: document.getElementById('noUrut').value,
+                tgl: document.getElementById('tglOtomatis').value,
+                nama: document.getElementById('namaProduk').value,
+                kat: document.getElementById('kategori').options[document.getElementById('kategori').selectedIndex].text,
+                sub: document.getElementById('subKategori').value,
+                subsub: document.getElementById('subSub').value,
+                metode: document.getElementById('metode').value,
+                nie: document.getElementById('nie').value,
+                batch: document.getElementById('noBatch').value,
+                ed: document.getElementById('ed').value,
+                tempat: document.getElementById('tempat').value,
+                bulan: document.getElementById('autoBulan').value,
+                petugas: document.getElementById('petugas').value
+            };
 
-    btn.disabled = true;
-    btn.innerText = "Mengirim...";
+            btn.disabled = true;
+            btn.innerText = "Mengirim...";
 
-    try {
-        // Mengirim data ke Google Sheets
-        await fetch(URL_GOOGLE_SCRIPT, {
-            method: "POST",
-            mode: "no-cors",
-            body: JSON.stringify(data)
-        });
-        
-        alert("Berhasil! Data telah disimpan.");
-        
-        // --- PROSES PEMBERSIHAN (RESET) ---
-        cacheRekap = null; // Reset cache rekap agar data terbaru masuk
-        resetForm();       // Panggil fungsi kosongkan kotak
-        
-        // --- AMBIL NOMOR URUT BARU ---
-        // Kita panggil lagi fungsi ini agar No Urut otomatis naik ke angka selanjutnya
-        await tampilkanHalaman('input-data'); 
-        
-    } catch (err) {
-        alert("Gagal menyimpan: " + err);
-    } finally {
-        btn.disabled = false;
-        btn.innerText = "Simpan ke Google Sheets";
-    }
-}
+            try {
+                await fetch(URL_GOOGLE_SCRIPT, {
+                    method: "POST",
+                    mode: "no-cors",
+                    body: JSON.stringify(data)
+                });
+                alert("Berhasil! Data telah disimpan.");
+                cacheRekap = null; 
+                resetForm();
+                await tampilkanHalaman('input-data'); 
+            } catch (err) {
+                alert("Gagal menyimpan: " + err);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Simpan ke Google Sheets";
+            }
+        }
 
-// FUNGSI BARU: Membersihkan semua kotak inputan
-function resetForm() {
-    // Daftar ID yang ingin dikosongkan
-    const inputIds = [
-        'namaProduk', 'subSub', 'nie', 'noBatch', 
-        'ed', 'tempat', 'petugas'
-    ];
-    
-    inputIds.forEach(id => {
-        document.getElementById(id).value = "";
-    });
-
-    // Reset Pilihan (Dropdown)
-    document.getElementById('kategori').value = "";
-    document.getElementById('subKategori').innerHTML = '<option value="">-- Pilih Kategori Dulu --</option>';
-    document.getElementById('metode').selectedIndex = 0; // Kembali ke 'Rutin'
-    
-    // Note: No Urut & Tanggal tidak direset di sini karena diatur ulang oleh tampilkanHalaman()
-}
+        function resetForm() {
+            const inputIds = ['namaProduk', 'subSub', 'nie', 'noBatch', 'ed', 'tempat', 'petugas'];
+            inputIds.forEach(id => { document.getElementById(id).value = ""; });
+            document.getElementById('kategori').value = "";
+            document.getElementById('subKategori').innerHTML = '<option value="">-- Pilih Kategori Dulu --</option>';
+            document.getElementById('metode').selectedIndex = 0;
+        }
 
         async function tampilkanRekap(forceRefresh = false) {
             const rb = document.getElementById('rekapBody');
-            
-            // Jika data sudah ada di memori, langsung tampilkan (Sangat Cepat)
             if (cacheRekap && !forceRefresh) {
                 renderTabel(cacheRekap);
                 return;
             }
-
             rb.innerHTML = '<tr><td colspan="7" class="loading-text">⚡ Menghubungkan ke Server Google...</td></tr>';
-
             try {
                 const response = await fetch(URL_GOOGLE_SCRIPT + "?action=read&t=" + new Date().getTime());
                 const data = await response.json();
                 cacheRekap = data;
                 renderTabel(data);
             } catch (error) {
-                rb.innerHTML = `<tr><td colspan="7" style="color:red;">Gagal memuat: Pastikan URL Apps Script Benar & Izin 'Anyone'.</td></tr>`;
+                rb.innerHTML = `<tr><td colspan="7" style="color:red;">Gagal memuat data.</td></tr>`;
             }
         }
 
+        // 2. UPDATE: Fungsi Render Tabel agar angka bulan jadi Nama Bulan lagi di tampilan
         function renderTabel(data) {
             const rb = document.getElementById('rekapBody');
             if (!data || data.length === 0) {
@@ -277,58 +251,53 @@ function resetForm() {
                 return;
             }
 
-            // Gabungkan semua baris menjadi satu string (Lebih cepat daripada looping innerHTML)
-            const html = data.map(row => `
-                <tr>
-                    <td>${row[0] || ''}</td>
-                    <td>${row[1] ? row[1].split('T')[0] : ''}</td>
-                    <td>${row[2] || ''}</td>
-                    <td>${row[3] || ''}</td>
-                    <td>${row[10] || ''}</td>
-                    <td>${row[11] || ''}</td>
-                    <td>${row[12] || ''}</td>
-                </tr>
-            `).join('');
-            
+            const namaBulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+            const html = data.map(row => {
+                const bulanValue = row[11]; // Index 11 adalah kolom 'Bulan' di Sheets (Kolom L)
+                const tampilanBulan = namaBulan[parseInt(bulanValue)] || bulanValue;
+
+                return `
+                    <tr>
+                        <td>${row[0] || ''}</td>
+                        <td>${row[1] ? row[1].split('T')[0] : ''}</td>
+                        <td>${row[2] || ''}</td>
+                        <td>${row[3] || ''}</td>
+                        <td>${row[10] || ''}</td> 
+                        <td>${tampilanBulan}</td>
+                        <td>${row[12] || ''}</td>
+                    </tr>
+                `;
+            }).join('');
             rb.innerHTML = html;
         }
 
         async function tampilkanHalaman(id) {
-    document.getElementById('dashboard').classList.remove('active');
-    document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    
-    if(id === 'input-data') {
-        // 1. Set tanggal hari ini
-        document.getElementById('tglOtomatis').valueAsDate = new Date();
-        document.getElementById('tglOtomatis').dispatchEvent(new Event('change'));
-        
-        // 2. Ambil No Urut Berikutnya dari Server
-        const inputNo = document.getElementById('noUrut');
-        inputNo.value = "⏳..."; 
-
-        try {
-            // Tambahkan cache breaker agar selalu ambil data terbaru
-            const response = await fetch(URL_GOOGLE_SCRIPT + "?action=get_next_no&t=" + new Date().getTime());
-            const nextNo = await response.text();
-            inputNo.value = nextNo;
-        } catch (err) {
-            inputNo.value = "Error";
-            console.error("Gagal sinkron nomor:", err);
+            document.getElementById('dashboard').classList.remove('active');
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            
+            if(id === 'input-data') {
+                document.getElementById('tglOtomatis').valueAsDate = new Date();
+                document.getElementById('tglOtomatis').dispatchEvent(new Event('change'));
+                const inputNo = document.getElementById('noUrut');
+                inputNo.value = "⏳..."; 
+                try {
+                    const response = await fetch(URL_GOOGLE_SCRIPT + "?action=get_next_no&t=" + new Date().getTime());
+                    const nextNo = await response.text();
+                    inputNo.value = nextNo;
+                } catch (err) {
+                    inputNo.value = "Error";
+                }
+            }
+            if(id === 'rekap') { tampilkanRekap(); }
         }
-    }
-    
-    if(id === 'rekap') {
-        tampilkanRekap();
-    }
-}
 
         function kembaliKeMenu() {
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
             document.getElementById('dashboard').classList.add('active');
         }
 
-        // Init Tabel Renlak
         const cats = ["Kosmetik Beresiko Tinggi","Kosmetik riwayat TMS","Sampling Mandiri UPT","Produksi Tiongkok"," Kontrak Produksi","Kuasa Merek","Menengah ke bawah / Viral","Online Official Store","Klaim Komposisi Tertentu","DNA porcine"];
         const trb = document.getElementById('tabelRenlakBody');
         cats.forEach(c => {
