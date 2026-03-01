@@ -2,63 +2,86 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aplikasi Paket Sampling Kosmetik 2026</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; color: #333; }
-        .header { background: #2c3e50; color: white; padding: 15px; text-align: center; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        #dashboard { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 50px; }
-        .card { 
-            background: white; width: 220px; padding: 30px; border-radius: 15px; 
-            text-align: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            transition: 0.3s; border: 1px solid #ddd;
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 15px; color: #333; }
+        .header { background: #2c3e50; color: white; padding: 10px; text-align: center; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header h1 { font-size: 18px; margin: 5px 0; }
+        .header p { font-size: 11px; margin: 0; opacity: 0.8; }
+
+        /* TAMPILAN MENU RAMPING UNTUK ANDROID */
+        #dashboard { display: flex; flex-direction: column; gap: 10px; max-width: 500px; margin: 20px auto; }
+        
+        .menu-btn {
+            display: flex; align-items: center; background: white; padding: 15px;
+            border-radius: 10px; text-decoration: none; color: #2c3e50;
+            font-weight: bold; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            cursor: pointer; transition: 0.2s;
         }
-        .card:hover { transform: translateY(-5px); border-color: #3498db; box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
-        .card h2 { font-size: 40px; margin-bottom: 10px; }
-        .card.db-link { border-left: 5px solid #27ae60; } /* Warna hijau untuk link GS */
-        .content-section { display: none; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 1100px; margin: auto; }
+        .menu-btn:hover { background: #f8f9fa; border-color: #3498db; }
+        .menu-btn i { font-size: 24px; margin-right: 15px; width: 30px; text-align: center; }
+        .menu-btn span { font-size: 15px; }
+
+        .content-section { display: none; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 1100px; margin: auto; }
         .active { display: block !important; }
-        .form-group { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+        
+        .form-group { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; }
         .input-item { display: flex; flex-direction: column; }
         label { font-weight: bold; margin-bottom: 5px; font-size: 13px; color: #2c3e50; }
-        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; background: white; }
-        .table-container { overflow-x: auto; margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; font-size: 11px; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        input, select { padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; background: white; }
+        
+        .table-container { overflow-x: auto; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; font-size: 10px; }
+        th, td { border: 1px solid #ccc; padding: 6px; text-align: center; }
         th { background: #3498db; color: white; }
-        .btn { padding: 12px 20px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; transition: 0.2s; }
-        .btn-back { background: #7f8c8d; color: white; margin-bottom: 20px; }
-        .btn-save { background: #27ae60; color: white; width: 100%; margin-top: 20px; font-size: 16px; }
-        .btn-danger { background: #e74c3c; color: white; padding: 8px 15px; font-size: 12px; }
+
+        .btn { padding: 12px 20px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; }
+        .btn-back { background: #7f8c8d; color: white; margin-bottom: 15px; width: 100%; }
+        .btn-save { background: #27ae60; color: white; width: 100%; margin-top: 15px; font-size: 16px; }
+        .btn-danger { background: #e74c3c; color: white; padding: 8px 15px; font-size: 12px; width: 100%; margin-top: 10px; }
+
+        /* Responsif Tablet/PC tetap rapi */
+        @media (min-width: 600px) {
+            .form-group { display: grid; grid-template-columns: 1fr 1fr; }
+            .header h1 { font-size: 24px; }
+            .btn-back { width: auto; }
+        }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>PAKET SAMPLING KOSMETIK 2026</h1>
-        <p>Sistem Input Database Terintegrasi Google Sheets</p>
+        <h1>PAKET SAMPLING 2026</h1>
+        <p>Database Terintegrasi Cloud</p>
     </div>
 
     <div id="dashboard" class="active">
-        <div class="card" onclick="tampilkanHalaman('input-data')"><h2>📝</h2><h3>1. Input Data</h3></div>
-        <div class="card" onclick="tampilkanHalaman('renlak')"><h2>📅</h2><h3>2. Renlak 2026</h3></div>
-        <div class="card" onclick="tampilkanHalaman('rekap')"><h2>📊</h2><h3>3. Rekap Cloud</h3></div>
-        <div class="card db-link" onclick="window.open('https://bit.ly/paketkos2026', '_blank')">
-            <h2>📗</h2><h3>4. Database Mentah</h3>
-            <p style="font-size: 10px; color: #7f8c8d;">(Google Sheets)</p>
+        <div class="menu-btn" onclick="tampilkanHalaman('input-data')">
+            <i>📝</i> <span>1. Input Data Baru</span>
+        </div>
+        <div class="menu-btn" onclick="tampilkanHalaman('renlak')">
+            <i>📅</i> <span>2. Rencana Pelaksanaan (Renlak)</span>
+        </div>
+        <div class="menu-btn" onclick="tampilkanHalaman('rekap')">
+            <i>📊</i> <span>3. Rekap Data Cloud</span>
+        </div>
+        <div class="menu-btn" style="border-left: 5px solid #27ae60;" onclick="window.open('https://bit.ly/paketkos2026', '_blank')">
+            <i>📗</i> <span>4. Buka Google Sheets Mentah</span>
         </div>
     </div>
 
     <div id="input-data" class="content-section">
-        <button class="btn btn-back" onclick="kembaliKeMenu()">← Dashboard</button>
-        <h2>Form Input Database Sampling</h2>
+        <button class="btn btn-back" onclick="kembaliKeMenu()">← Kembali ke Menu</button>
+        <h3 style="margin-top:0">Form Input Data</h3>
         <div class="form-group">
-            <div class="input-item"> <label>A. No. Urut (Otomatis)</label> <input type="text" id="noUrut" readonly style="background: #e9ecef;"></div>
-            <div class="input-item"><label>B. Tanggal & Jam (Auto)</label><input type="text" id="tglOtomatis" readonly style="background: #e9ecef;"></div>
-            <div class="input-item"><label>C. Nama Produk</label><input type="text" id="namaProduk" placeholder="Input Nama Produk..."></div>
+            <div class="input-item"> <label>No. Urut (Otomatis)</label> <input type="text" id="noUrut" readonly style="background: #eee;"></div>
+            <div class="input-item"><label>Waktu Input (Auto)</label><input type="text" id="tglOtomatis" readonly style="background: #eee;"></div>
+            <div class="input-item"><label>Nama Produk</label><input type="text" id="namaProduk" placeholder="Nama Produk..."></div>
             <div class="input-item">
-                <label>D. Kategori</label>
+                <label>Kategori</label>
                 <select id="kategori" onchange="updateSubKategori()">
-                    <option value="">-- Pilih Kategori --</option>
+                    <option value="">-- Pilih --</option>
                     <option value="1">Kosmetik Beresiko Tinggi</option>
                     <option value="2">Kosmetik riwayat TMS</option>
                     <option value="3">Sampling Mandiri UPT</option>
@@ -71,25 +94,20 @@
                     <option value="10">DNA porcine</option>
                 </select>
             </div>
-            <div class="input-item"><label>E. Sub Kategori</label><select id="subKategori"><option value="">-- Pilih Kategori Dulu --</option></select></div>
-            <div class="input-item"><label>F. Sub Sub Kategori</label><input type="text" id="subSub" placeholder="-"></div>
-            <div class="input-item"><label>G. Metode</label><select id="metode"><option>offline</option><option>online</option></select></div>
-            <div class="input-item"><label>H. NIE</label><input type="text" id="nie"></div>
-            <div class="input-item"><label>I. Nomor Batch</label><input type="text" id="noBatch"></div>
-            <div class="input-item"><label>J. Expired Date</label><input type="date" id="ed"></div>
-            <div class="input-item"><label>K. Tempat Sampling</label><input type="text" id="tempat"></div>
-            <div class="input-item"><label>L. Auto Bulan (Angka)</label><input type="text" id="autoBulan" readonly style="background: #e9ecef;"></div>
-            <div class="input-item"><label>M. Petugas</label><input type="text" id="petugas"></div>
-        </div>
-        <button class="btn btn-save" id="btnSimpan" onclick="simpanData()">Simpan ke Google Sheets</button>
+            <div class="input-item"><label>Sub Kategori</label><select id="subKategori"><option value="">-- Pilih --</option></select></div>
+            <div class="input-item"><label>Metode</label><select id="metode"><option>offline</option><option>online</option></select></div>
+            <div class="input-item"><label>Tempat Sampling</label><input type="text" id="tempat"></div>
+            <div class="input-item"><label>Petugas</label><input type="text" id="petugas"></div>
+            <input type="hidden" id="autoBulan"> </div>
+        <button class="btn btn-save" id="btnSimpan" onclick="simpanData()">SIMPAN DATA</button>
     </div>
 
     <div id="renlak" class="content-section">
         <button class="btn btn-back" onclick="kembaliKeMenu()">← Kembali</button>
-        <h2>Rencana Pelaksanaan (Renlak) 2026</h2>
+        <h3>Renlak 2026</h3>
         <div class="table-container">
             <table>
-                <thead><tr><th>Kategori</th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>Mei</th><th>Jun</th><th>Jul</th><th>Agu</th><th>Sep</th><th>Okt</th><th>Nov</th><th>Des</th></tr></thead>
+                <thead><tr><th>Kategori</th><th>J</th><th>F</th><th>M</th><th>A</th><th>M</th><th>J</th><th>J</th><th>A</th><th>S</th><th>O</th><th>N</th><th>D</th></tr></thead>
                 <tbody id="tabelRenlakBody"></tbody>
             </table>
         </div>
@@ -97,28 +115,20 @@
 
     <div id="rekap" class="content-section">
         <button class="btn btn-back" onclick="kembaliKeMenu()">← Kembali</button>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h2>Data Terkoneksi (Log Database)</h2>
-            <button class="btn btn-danger" onclick="tampilkanRekap(true)">🔄 Segarkan Data</button>
-        </div>
+        <h3>Log Database Terbaru</h3>
         <div class="table-container">
             <table>
                 <thead>
-                    <tr>
-                        <th>No</th><th>Tanggal & Waktu</th><th>Produk</th><th>Kategori</th><th>Tempat</th><th>Bulan</th><th>Petugas</th>
-                    </tr>
+                    <tr><th>No</th><th>Waktu</th><th>Produk</th><th>Tempat</th><th>Petugas</th></tr>
                 </thead>
-                <tbody id="rekapBody">
-                    <tr><td colspan="7">Memuat data...</td></tr>
-                </tbody>
+                <tbody id="rekapBody"><tr><td colspan="5">Memuat...</td></tr></tbody>
             </table>
         </div>
+        <button class="btn btn-danger" onclick="tampilkanRekap(true)">🔄 Segarkan Data</button>
     </div>
 
     <script>
-        // PASTIKAN URL INI SESUAI DENGAN DEPLOY TERBARU GOOGLE SCRIPT ANDA
         const URL_GOOGLE_SCRIPT = "https://script.google.com/macros/s/AKfycbybak0m1wUhbgDkwvaFIu8O4FoAEJJ45nTjd3tsGeYQdytQeExmURnc_v5zlgU7r7MU/exec";
-        
         let cacheRekap = null;
 
         const subKategoriData = {
@@ -136,10 +146,7 @@
 
         function updateTimestamp() {
             const skrg = new Date();
-            const format = skrg.toLocaleString('id-ID', { 
-                day:'2-digit', month:'2-digit', year:'numeric',
-                hour:'2-digit', minute:'2-digit', second:'2-digit'
-            }).replace(/\//g, '-');
+            const format = skrg.toLocaleString('id-ID', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' }).replace(/\//g, '-');
             document.getElementById('tglOtomatis').value = format;
             document.getElementById('autoBulan').value = skrg.getMonth() + 1;
         }
@@ -147,7 +154,7 @@
         function updateSubKategori() {
             const kat = document.getElementById("kategori").value;
             const sub = document.getElementById("subKategori");
-            sub.innerHTML = '<option value="">-- Pilih Sub Kategori --</option>';
+            sub.innerHTML = '<option value="">-- Pilih --</option>';
             if (kat && subKategoriData[kat]) {
                 subKategoriData[kat].forEach(s => {
                     let opt = document.createElement("option");
@@ -158,12 +165,9 @@
 
         async function simpanData() {
             const btn = document.getElementById('btnSimpan');
-            if(!document.getElementById('namaProduk').value) {
-                return alert("Mohon isi Nama Produk!");
-            }
+            if(!document.getElementById('namaProduk').value) return alert("Isi Nama Produk!");
 
             updateTimestamp(); 
-
             const data = {
                 action: "insert",
                 no: document.getElementById('noUrut').value,
@@ -171,88 +175,58 @@
                 nama: document.getElementById('namaProduk').value,
                 kat: document.getElementById('kategori').options[document.getElementById('kategori').selectedIndex].text,
                 sub: document.getElementById('subKategori').value,
-                subsub: document.getElementById('subSub').value,
                 metode: document.getElementById('metode').value,
-                nie: document.getElementById('nie').value,
-                batch: document.getElementById('noBatch').value,
-                ed: document.getElementById('ed').value,
                 tempat: document.getElementById('tempat').value,
                 bulan: document.getElementById('autoBulan').value,
                 petugas: document.getElementById('petugas').value
             };
 
-            btn.disabled = true;
-            btn.innerText = "Mengirim...";
-
+            btn.disabled = true; btn.innerText = "Mengirim...";
             try {
                 await fetch(URL_GOOGLE_SCRIPT, { method: "POST", mode: "no-cors", body: JSON.stringify(data) });
-                alert("Berhasil disimpan ke Cloud!");
+                alert("Data Tersimpan!");
                 cacheRekap = null;
                 resetForm();
                 await tampilkanHalaman('input-data');
-            } catch (err) {
-                alert("Gagal: " + err);
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "Simpan ke Google Sheets";
-            }
+            } catch (err) { alert("Gagal: " + err); } 
+            finally { btn.disabled = false; btn.innerText = "SIMPAN DATA"; }
         }
 
         function resetForm() {
-            ['namaProduk', 'subSub', 'nie', 'noBatch', 'ed', 'tempat', 'petugas'].forEach(id => {
-                document.getElementById(id).value = "";
-            });
+            ['namaProduk', 'tempat', 'petugas'].forEach(id => document.getElementById(id).value = "");
             document.getElementById('kategori').value = "";
-            document.getElementById('subKategori').innerHTML = '<option value="">-- Pilih Kategori Dulu --</option>';
         }
 
         async function tampilkanRekap(forceRefresh = false) {
             const rb = document.getElementById('rekapBody');
             if (cacheRekap && !forceRefresh) { renderTabel(cacheRekap); return; }
-            rb.innerHTML = '<tr><td colspan="7">⚡ Sinkronisasi Cloud...</td></tr>';
+            rb.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
             try {
                 const response = await fetch(URL_GOOGLE_SCRIPT + "?action=read&t=" + new Date().getTime());
                 const data = await response.json();
                 cacheRekap = data;
                 renderTabel(data);
-            } catch (error) {
-                rb.innerHTML = `<tr><td colspan="7" style="color:red;">Gagal memuat data.</td></tr>`;
-            }
+            } catch (error) { rb.innerHTML = '<tr><td colspan="5">Gagal muat.</td></tr>'; }
         }
 
         function renderTabel(data) {
             const rb = document.getElementById('rekapBody');
-            if (!data || data.length === 0) { rb.innerHTML = '<tr><td colspan="7">Database Kosong</td></tr>'; return; }
-            const namaBulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-            
-            rb.innerHTML = data.map(row => `
-                <tr>
-                    <td>${row[0]||''}</td>
-                    <td>${row[1]||''}</td>
-                    <td>${row[2]||''}</td>
-                    <td>${row[3]||''}</td>
-                    <td>${row[10]||''}</td>
-                    <td>${namaBulan[row[11]]||row[11]}</td>
-                    <td>${row[12]||''}</td>
-                </tr>
+            if (!data || data.length === 0) { rb.innerHTML = '<tr><td colspan="5">Kosong</td></tr>'; return; }
+            rb.innerHTML = data.slice(-10).reverse().map(row => `
+                <tr><td>${row[0]||''}</td><td>${row[1]||''}</td><td>${row[2]||''}</td><td>${row[10]||''}</td><td>${row[12]||''}</td></tr>
             `).join('');
         }
 
         async function tampilkanHalaman(id) {
-            if(id === 'db-link') return; // Biar tidak mengganggu fungsi navigasi lainnya
-            
             document.getElementById('dashboard').classList.remove('active');
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-
             if(id === 'input-data') {
                 updateTimestamp();
                 const inputNo = document.getElementById('noUrut');
-                inputNo.value = "⏳...";
-                try {
-                    const res = await fetch(URL_GOOGLE_SCRIPT + "?action=get_next_no&t=" + new Date().getTime());
-                    inputNo.value = await res.text();
-                } catch(e) { inputNo.value = "ERR"; }
+                inputNo.value = "⏳";
+                const res = await fetch(URL_GOOGLE_SCRIPT + "?action=get_next_no&t=" + new Date().getTime());
+                inputNo.value = await res.text();
             }
             if(id === 'rekap') tampilkanRekap();
         }
@@ -262,8 +236,7 @@
             document.getElementById('dashboard').classList.add('active');
         }
 
-        // INIT RENLAK
-        const cats = ["Kosmetik Beresiko Tinggi","Kosmetik riwayat TMS","Sampling Mandiri UPT"];
+        const cats = ["Beresiko Tinggi","Riwayat TMS","Mandiri UPT"];
         const trb = document.getElementById('tabelRenlakBody');
         cats.forEach(c => {
             let r = `<tr><td style="text-align:left;">${c}</td>`;
