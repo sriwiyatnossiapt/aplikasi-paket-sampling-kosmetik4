@@ -114,12 +114,19 @@
         const URL_GOOGLE_SCRIPT = "https://script.google.com/macros/s/AKfycbybak0m1wUhbgDkwvaFIu8O4FoAEJJ45nTjd3tsGeYQdytQeExmURnc_v5zlgU7r7MU/exec";
         let cacheRekap = null;
 
-        const subKategoriData = {
-            "1": ["Sediaan bayi", "Sediaan perawatan wajah", "Sediaan rias mata"],
-            "2": ["Sediaan untuk alis", "Eye shadow", "Eye liner"],
-            "3": ["Bedak Badan", "Lip Care", "Mouthwashes"],
-            // ... (tambahkan kategori lain sesuai kebutuhan)
+              const subKategoriData = {
+            "1": ["Sediaan bayi", "Sediaan perawatan wajah", "Sediaan rias mata", "Sediaan rias wajah", "Sediaan rias bibir", "Sediaan parfum", "Sediaan pewarna kuku"],
+            "2": ["Sediaan untuk alis", "Eye shadow", "Eye liner", "Blush on", "Bedak padat", "Pembersih kulit muka", "Mascara", "Lipstik", "Krim pencerah"],
+            "3": ["Bedak Badan", "Lip Care", "Mouthwashes", "Kondisioner", "Sampo", "Sabun Bayi", "Anti Aging", "Prioritas"],
+            "4": ["Krim malam", "Krim Siang", "Masker Wajah", "Bedak padat", "Lipstik", "Moisturiser", "Parfume"],
+            "5": ["Day Cream", "Night Cream", "Tabir surya", "Skin aging", "Pembersih wajah", "Pencerah"],
+            "6": ["Day Cream", "Night Cream", "Hand Body Lotion", "Parfume", "Penyegar", "Baby hair wash"],
+            "7": ["Bedak Badan", "Lipstik", "Deodoran", "Acne care"],
+            "8": ["Lip colour", "Skin aging product", "Day Cream", "Night Cream", "Pelembab"],
+            "9": ["Baby cream", "Sediaan bayi lainnya", "Sediaan tabir surya"],
+            "10": ["Pelembab/moisturizer"]
         };
+
 
         // AUTO BULAN HANDLER
         document.getElementById('tglOtomatis').addEventListener('change', function() {
@@ -241,3 +248,4 @@
     </script>
 </body>
 </html>
+
