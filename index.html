@@ -14,6 +14,7 @@
         }
         .card:hover { transform: translateY(-5px); border-color: #3498db; box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
         .card h2 { font-size: 40px; margin-bottom: 10px; }
+        .card.db-link { border-left: 5px solid #27ae60; } /* Warna hijau untuk link GS */
         .content-section { display: none; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 1100px; margin: auto; }
         .active { display: block !important; }
         .form-group { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
@@ -41,6 +42,10 @@
         <div class="card" onclick="tampilkanHalaman('input-data')"><h2>📝</h2><h3>1. Input Data</h3></div>
         <div class="card" onclick="tampilkanHalaman('renlak')"><h2>📅</h2><h3>2. Renlak 2026</h3></div>
         <div class="card" onclick="tampilkanHalaman('rekap')"><h2>📊</h2><h3>3. Rekap Cloud</h3></div>
+        <div class="card db-link" onclick="window.open('https://bit.ly/paketkos2026', '_blank')">
+            <h2>📗</h2><h3>4. Database Mentah</h3>
+            <p style="font-size: 10px; color: #7f8c8d;">(Google Sheets)</p>
+        </div>
     </div>
 
     <div id="input-data" class="content-section">
@@ -111,7 +116,7 @@
     </div>
 
     <script>
-        // MASUKKAN URL GOOGLE SCRIPT ANDA DI SINI
+        // PASTIKAN URL INI SESUAI DENGAN DEPLOY TERBARU GOOGLE SCRIPT ANDA
         const URL_GOOGLE_SCRIPT = "https://script.google.com/macros/s/AKfycbybak0m1wUhbgDkwvaFIu8O4FoAEJJ45nTjd3tsGeYQdytQeExmURnc_v5zlgU7r7MU/exec";
         
         let cacheRekap = null;
@@ -157,7 +162,7 @@
                 return alert("Mohon isi Nama Produk!");
             }
 
-            updateTimestamp(); // Refresh waktu tepat sebelum simpan
+            updateTimestamp(); 
 
             const data = {
                 action: "insert",
@@ -211,7 +216,7 @@
                 cacheRekap = data;
                 renderTabel(data);
             } catch (error) {
-                rb.innerHTML = `<tr><td colspan="7" style="color:red;">Gagal memuat. Periksa URL Script.</td></tr>`;
+                rb.innerHTML = `<tr><td colspan="7" style="color:red;">Gagal memuat data.</td></tr>`;
             }
         }
 
@@ -234,6 +239,8 @@
         }
 
         async function tampilkanHalaman(id) {
+            if(id === 'db-link') return; // Biar tidak mengganggu fungsi navigasi lainnya
+            
             document.getElementById('dashboard').classList.remove('active');
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
